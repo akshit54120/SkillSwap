@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import LogoIcon from './Logo';
+import { useAuth } from '../context/AuthContext';
+import { auth } from '../firebase';
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check initial state from document element
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/');
+    } catch (err) {
+      console.error("Logout error", err);
+    }
+  };
 
   const toggleTheme = () => {
     if (isDarkMode) {
@@ -56,16 +69,12 @@ const Navbar = () => {
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {localStorage.getItem('isAuthenticated') === 'true' ? (
+          {currentUser ? (
             <div className="flex gap-4">
               <Link to="/profile" className="btn btn-outline">Profile</Link>
               <button 
                 className="btn btn-primary" 
-                onClick={() => {
-                  localStorage.removeItem('isAuthenticated');
-                  localStorage.removeItem('currentUser');
-                  window.location.href = '/';
-                }}
+                onClick={handleLogout}
               >
                 Logout
               </button>

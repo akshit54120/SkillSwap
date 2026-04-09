@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import VerificationBanner from './components/VerificationBanner';
 
 // Pages
 import Home from './pages/Home';
@@ -17,6 +18,7 @@ function App() {
     <Router>
       <div className="page-wrapper">
         <Navbar />
+        <VerificationBanner />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />

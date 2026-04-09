@@ -1,30 +1,50 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import UserCard from '../components/UserCard';
 import { MOCK_USERS } from '../data/users';
+import { useAuth } from '../context/AuthContext';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Explore = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [realUsers, setRealUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [connectionMessage, setConnectionMessage] = useState(null);
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
-  // Get current logged-in user's id so we don't show them their own card
-  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        const users = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (currentUser && data.uid === currentUser.uid) return; // filter self
+          users.push({ ...data, id: data.uid, isRealUser: true });
+        });
+        setRealUsers(users);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Merge real registered users from localStorage with mock users
-  const realUsers = JSON.parse(localStorage.getItem('users') || '[]')
-    .filter(u => u.id !== currentUser.id)  // hide self
-    .map(u => ({ ...u, isRealUser: true }));
+    fetchUsers();
+  }, [currentUser]);
 
-  // Combine: real registered users first, then mocks (no duplicates by id)
+  // Combine: real registered users first, then mocks
   const realUserEmails = realUsers.map(u => u.email);
   const mockUsers = MOCK_USERS.filter(u => !realUserEmails.includes(u.email));
   const allUsers = [...realUsers, ...mockUsers];
 
   const filteredUsers = allUsers.filter(user => {
     const term = searchTerm.toLowerCase();
-    const matchesName = user.name.toLowerCase().includes(term);
+    const name = user.name || '';
+    const matchesName = name.toLowerCase().includes(term);
     const offeredSkills = user.skillsOffered || [];
     const wantedSkills = user.skillsWanted || [];
     const matchesOffered = offeredSkills.some(skill => skill.toLowerCase().includes(term));
