@@ -1,29 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, MessageSquare, Calendar, CheckCircle, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getNotifications, markAsRead, markAllAsRead } from '../services/NotificationService';
+import { useAuth } from '../context/AuthContext';
+import { subscribeNotifications, markAsRead, markAllAsRead } from '../services/NotificationService';
 
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const { currentUser } = useAuth();
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   
-  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
-  const fetchNotifications = () => {
-    if (currentUser.id) {
-      const notifs = getNotifications(currentUser.id);
-      setNotifications(notifs);
-    }
-  };
-
-  // Poll for notifications every 3 seconds
   useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 3000);
-    return () => clearInterval(interval);
-  }, [currentUser.id]);
+    if (!currentUser?.uid) return;
+    const unsubscribe = subscribeNotifications(currentUser.uid, (list) => {
+      setNotifications(list);
+    });
+    return () => unsubscribe();
+  }, [currentUser?.uid]);
 
   // Handle click outside to close
   useEffect(() => {
@@ -44,13 +38,11 @@ const NotificationDropdown = () => {
       navigate(notif.link);
     }
     setIsOpen(false);
-    fetchNotifications();
   };
 
   const handleMarkAllRead = (e) => {
     e.stopPropagation();
-    markAllAsRead(currentUser.id);
-    fetchNotifications();
+    markAllAsRead(currentUser.uid);
   };
 
   const getIcon = (type) => {
@@ -157,7 +149,7 @@ const NotificationDropdown = () => {
                       <strong style={{ fontWeight: 600 }}>{notif.senderName}</strong> {notif.content}
                     </p>
                     <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                      {new Date(notif.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {notif.time || 'Recently'}
                     </p>
                   </div>
                   {!notif.isRead && (

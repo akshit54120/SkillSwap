@@ -303,6 +303,36 @@ const Requests = () => {
         )}
       </div>
 
+      {/* Outgoing Requests Section Addition */}
+      <div style={{ marginBottom: '3rem' }}>
+        <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Clock size={20} style={{ color: 'var(--color-secondary)' }} /> Outgoing Sent Requests ({outgoingRequests.length})
+        </h3>
+        
+        {outgoingRequests.length === 0 ? (
+          <div className="card text-center" style={{ padding: '2rem', color: 'var(--color-text-secondary)', backgroundColor: 'transparent', border: '1px dashed var(--color-border)' }}>
+            You haven't sent any pending requests.
+          </div>
+        ) : (
+          <div className="flex" style={{ flexDirection: 'column', gap: '1rem' }}>
+            {outgoingRequests.map(req => (
+              <div key={req.id} className="card flex items-center justify-between" style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-secondary)' }}>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Sent to {req.receiverName}</h4>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
+                    Requested to learn <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>{req.skillWanted}</span>
+                  </p>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>{req.time}</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-secondary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                  <span className="animate-pulse">●</span> Pending
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div>
         <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
           Active Connections & History

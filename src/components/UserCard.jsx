@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Star, Bookmark, Award, Flame, Target } from 'lucide-react';
+import MentorBadge from './MentorBadge';
 import { doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -63,8 +64,9 @@ const UserCard = ({ user, onConnect }) => {
           <div style={{ position: 'absolute', bottom: 0, right: 0, width: '12px', height: '12px', backgroundColor: isOnline ? '#10B981' : '#9CA3AF', border: '2px solid var(--color-surface)', borderRadius: '50%' }} title={isOnline ? 'Online' : 'Offline'} />
         </div>
         <div>
-          <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.25rem 0', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.25rem 0', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
             {user.name}
+            <MentorBadge credits={user.credits} size={14} />
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10B981', padding: '0.1rem 0.5rem', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: 600 }}>
               <Star size={12} fill="#10B981" /> {displayRating}
             </span>

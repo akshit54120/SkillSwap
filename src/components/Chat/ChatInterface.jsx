@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Send, Calendar, CheckCircle, Video, Plus, Smile, MessageSquare } from 'lucide-react';
-import { getMessages, sendMessage, proposeMeeting, acceptMeeting } from '../../services/ChatService';
+import { subscribeMessages, sendMessage, proposeMeeting, acceptMeeting } from '../../services/ChatService';
 
 const ChatInterface = ({ currentUser, targetUser }) => {
   const { conversationId } = useParams();
@@ -11,15 +11,12 @@ const ChatInterface = ({ currentUser, targetUser }) => {
   const [proposedTime, setProposedTime] = useState('');
 
   useEffect(() => {
-    loadMessages();
-    const interval = setInterval(loadMessages, 3000);
-    return () => clearInterval(interval);
+    if (!conversationId) return;
+    const unsubscribe = subscribeMessages(conversationId, (list) => {
+      setMessages(list);
+    });
+    return () => unsubscribe();
   }, [conversationId]);
-
-  const loadMessages = async () => {
-    const msgs = await getMessages(conversationId);
-    setMessages([...msgs]);
-  };
 
   const handleSendMessage = async (e, forcedMessage = null) => {
     if (e) e.preventDefault();
@@ -32,7 +29,6 @@ const ChatInterface = ({ currentUser, targetUser }) => {
       content: content
     });
     if (!forcedMessage) setNewMessage('');
-    loadMessages();
   };
 
   const handleProposeMeeting = async () => {
@@ -40,13 +36,11 @@ const ChatInterface = ({ currentUser, targetUser }) => {
     await proposeMeeting(conversationId, currentUser.id, proposedTime);
     setShowProposeModal(false);
     setProposedTime('');
-    loadMessages();
   };
 
   const handleAcceptMeeting = async (proposalId) => {
     const userEmails = [currentUser.email, targetUser.email]; 
     await acceptMeeting(conversationId, proposalId, userEmails, currentUser.id);
-    loadMessages();
   };
 
   const handleSayHi = () => {

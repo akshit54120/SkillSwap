@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { User, Settings, Save, X } from 'lucide-react';
+import { Settings, Save, X, Award } from 'lucide-react';
+import MentorBadge from '../components/MentorBadge';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -157,7 +158,10 @@ const Profile = () => {
                 />
               </div>
             ) : (
-              <h3 style={{ fontSize: '1.8rem', marginBottom: '0.25rem' }}>{profileData.name}</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <h3 style={{ fontSize: '1.8rem', marginBottom: 0 }}>{profileData.name}</h3>
+                <MentorBadge credits={profileData.credits} size={20} />
+              </div>
             )}
             <p style={{ color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>{profileData.email}</p>
           </div>

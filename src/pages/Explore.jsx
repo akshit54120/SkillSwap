@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { collection, getDocs, addDoc, query, where, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
 import { handleConnect as createConversation } from '../services/ChatService';
+import { addNotification } from '../services/NotificationService';
 
 const CATEGORIES = ['Programming', 'Design', 'Music', 'Language', 'Marketing', 'Finance', 'Food', 'Fitness'];
 const AVAILABILITIES = ['Mornings', 'Afternoons', 'Evenings', 'Weekdays', 'Weekends', 'Flexible'];
@@ -169,6 +170,15 @@ const Explore = () => {
           skillOffered: userData?.skillsOffered?.[0] || 'Any',
           status: 'pending',
           createdAt: serverTimestamp()
+        });
+
+        // Notify the recipient
+        await addNotification({
+          recipientId: String(user.id),
+          type: 'request',
+          senderName: userData?.name || currentUser.displayName || 'Someone',
+          content: 'sent you a connection request!',
+          link: '/requests'
         });
 
         await updateDoc(doc(db, 'users', currentUser.uid), {

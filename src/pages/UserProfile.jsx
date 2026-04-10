@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MessageCircle, Loader2, Star, Award, Flame, Target } from 'lucide-react';
+import MentorBadge from '../components/MentorBadge';
 import { MOCK_USERS } from '../data/users';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
 import { handleConnect as createConversation } from '../services/ChatService';
+import { addNotification } from '../services/NotificationService';
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -111,6 +113,15 @@ const UserProfile = () => {
           createdAt: serverTimestamp()
         });
 
+        // Notify the recipient
+        await addNotification({
+          recipientId: String(user.id),
+          type: 'request',
+          senderName: userData?.name || currentUser.displayName || 'Someone',
+          content: 'sent you a connection request!',
+          link: '/requests'
+        });
+
         await updateDoc(doc(db, 'users', currentUser.uid), {
           credits: increment(-1)
         });
@@ -185,7 +196,10 @@ const UserProfile = () => {
             {/* Online Indicator */}
             <div style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', width: '20px', height: '20px', backgroundColor: (user.id ? String(user.id).charCodeAt(0) % 2 === 0 : true) ? '#10B981' : '#9CA3AF', border: '3px solid var(--color-surface)', borderRadius: '50%' }} title="Status" />
           </div>
-          <h2 style={{ fontSize: '2.2rem', marginBottom: '0.2rem' }}>{user.name}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <h2 style={{ fontSize: '2.2rem', marginBottom: 0 }}>{user.name}</h2>
+            <MentorBadge credits={user.credits} size={24} />
+          </div>
           
           {/* Top Badges Row */}
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '0.75rem' }}>
