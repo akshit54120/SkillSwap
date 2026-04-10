@@ -49,6 +49,7 @@ const Auth = ({ type }) => {
           skillsWanted: [],
           bio: '',
           availability: 'Flexible',
+          credits: 10,
           createdAt: new Date().toISOString()
         });
 

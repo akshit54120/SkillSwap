@@ -12,6 +12,8 @@ import Requests from './pages/Requests';
 import UserProfile from './pages/UserProfile';
 import Onboarding from './pages/Onboarding';
 import ChatPage from './pages/ChatPage';
+import Wallet from './pages/Wallet';
+import SavedUsers from './pages/SavedUsers';
 
 const AppLayout = () => {
   const location = useLocation();
@@ -31,6 +33,8 @@ const AppLayout = () => {
           <Route path="/user/:id" element={<UserProfile />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="/chat/:conversationId" element={<ChatPage />} />
+          <Route path="/wallet" element={<Wallet />} />
+          <Route path="/saved" element={<SavedUsers />} />
         </Routes>
       </main>
       {!isChatRoute && <Footer />}

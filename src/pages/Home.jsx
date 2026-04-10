@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Book, Users, TrendingUp, ArrowRight, GraduationCap, BookOpen } from 'lucide-react';
+import { Search, Book, Users, TrendingUp, ArrowRight, GraduationCap, BookOpen, Activity } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const FeatureCard = ({ icon: Icon, title, description }) => (
   <div className="card text-center flex items-center justify-center" style={{ flexDirection: 'column', height: '100%', padding: '2.5rem 1.5rem' }}>
@@ -23,6 +24,8 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
 );
 
 const Home = () => {
+  const { currentUser } = useAuth();
+
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
@@ -40,7 +43,9 @@ const Home = () => {
             Learn. Teach. Grow Together. Connect with students to learn and teach skills collaboratively in a peer-to-peer ecosystem.
           </p>
           <div className="flex justify-center gap-4">
-            <Link to="/signup" className="btn btn-primary" style={{ padding: '0.75rem 2rem', fontSize: '1.1rem' }}>Get Started</Link>
+            <Link to={currentUser ? "/explore" : "/signup"} className="btn btn-primary" style={{ padding: '0.75rem 2rem', fontSize: '1.1rem' }}>
+              {currentUser ? "Continue Exploring" : "Get Started"}
+            </Link>
             <Link to="/explore" className="btn btn-outline" style={{ padding: '0.75rem 2rem', fontSize: '1.1rem' }}>
               Explore Skills <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
             </Link>
@@ -52,16 +57,16 @@ const Home = () => {
           </p>
           <div className="flex justify-center gap-4" style={{ flexWrap: 'wrap' }}>
             <Link 
-              to="/signup" 
-              onClick={() => localStorage.setItem('selectedRole', 'teacher')} 
+              to={currentUser ? "/explore" : "/signup"} 
+              onClick={() => !currentUser && localStorage.setItem('selectedRole', 'teacher')} 
               className="btn btn-primary flex items-center gap-2" 
               style={{ padding: '0.875rem 2rem', fontSize: '1.05rem' }}
             >
               <GraduationCap size={20} /> Become a Teacher
             </Link>
             <Link 
-              to="/signup" 
-              onClick={() => localStorage.setItem('selectedRole', 'student')} 
+              to={currentUser ? "/explore" : "/signup"} 
+              onClick={() => !currentUser && localStorage.setItem('selectedRole', 'student')} 
               className="btn btn-outline flex items-center gap-2" 
               style={{ padding: '0.875rem 2rem', fontSize: '1.05rem' }}
             >
@@ -99,6 +104,33 @@ const Home = () => {
               title="Grow Together" 
               description="Build a community of collaborative learning." 
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Activity Section */}
+      <section style={{ padding: '5rem 0', backgroundColor: 'var(--color-bg-start)' }}>
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: '3rem' }}>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
+              <Activity color="var(--color-primary)" size={32} /> Live Activity
+            </h2>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem' }}>See what's happening in the SkillSwap community right now</p>
+          </div>
+          <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {[
+              { id: 1, user: "Priyank", action: "just connected with", target: "Akshit", time: "2 mins ago" },
+              { id: 2, user: "Maulik", action: "completed a session on", target: "UI Design", time: "15 mins ago" },
+              { id: 3, user: "Aarav Patel", action: "earned a Top Mentor badge", target: "⭐", time: "1 hour ago" },
+              { id: 4, user: "Nina", action: "just joined SkillSwap to learn", target: "Machine Learning", time: "2 hours ago" },
+            ].map(act => (
+              <div key={act.id} className="card flex items-center justify-between" style={{ padding: '1.25rem 2rem', transition: 'transform 0.2s', borderLeft: '4px solid var(--color-primary)' }}>
+                <p style={{ fontSize: '1.05rem', margin: 0 }}>
+                  <span style={{ fontWeight: 'bold' }}>{act.user}</span> <span style={{ color: 'var(--color-text-secondary)' }}>{act.action}</span> <span style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{act.target}</span>
+                </p>
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{act.time}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -141,8 +173,8 @@ const Home = () => {
           <p style={{ fontSize: '1.1rem', marginBottom: '2.5rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto 2.5rem' }}>
             Join thousands of students learning from each other on SkillSwap. It's completely free.
           </p>
-          <Link to="/signup" className="btn" style={{ backgroundColor: 'white', color: 'var(--color-primary)', padding: '1rem 3rem', fontSize: '1.1rem', boxShadow: 'var(--shadow-lg)' }}>
-            Join Now
+          <Link to={currentUser ? "/explore" : "/signup"} className="btn" style={{ backgroundColor: 'white', color: 'var(--color-primary)', padding: '1rem 3rem', fontSize: '1.1rem', boxShadow: 'var(--shadow-lg)' }}>
+            {currentUser ? 'Explore Community' : 'Join Now'}
           </Link>
         </div>
       </section>

@@ -3,15 +3,24 @@ import { useLocation, Navigate, Link } from 'react-router-dom';
 import ChatInterface from '../components/Chat/ChatInterface';
 import { MessageSquare, Users, Repeat } from 'lucide-react';
 import LogoIcon from '../components/Logo';
+import { useAuth } from '../context/AuthContext';
 
 const ChatPage = () => {
   const location = useLocation();
-  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  const { currentUser: authUser, userData, loading } = useAuth();
+  
   const targetUser = location.state?.targetUser;
+  
+  if (loading) return null;
 
-  if (!currentUser.id) {
+  if (!authUser) {
     return <Navigate to="/login" />;
   }
+
+  const currentUser = {
+    id: authUser.uid,
+    name: userData?.name || authUser.displayName || 'Me'
+  };
 
   if (!targetUser) {
     return (

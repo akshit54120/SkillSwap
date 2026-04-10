@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sun, Moon, Wallet } from 'lucide-react';
+import { Sun, Moon, Wallet, Bookmark } from 'lucide-react';
 
 import LogoIcon from './Logo';
 import NotificationDropdown from './NotificationDropdown';
 
-import { getWallet } from '../services/EconomyService';
 import { useAuth } from '../context/AuthContext';
 import { auth } from '../firebase';
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [balance, setBalance] = useState(0);
 
-  const { currentUser } = useAuth();
+  const { currentUser, userData } = useAuth();
   const navigate = useNavigate();
 
   // 🌙 Theme setup
@@ -21,24 +19,6 @@ const Navbar = () => {
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
   }, []);
-
-  // 💰 Wallet logic
-  useEffect(() => {
-    if (currentUser?.uid) {
-      const wallet = getWallet(currentUser.uid);
-      setBalance(wallet.balance);
-    }
-
-    const handleWalletUpdate = () => {
-      if (currentUser?.uid) {
-        const wallet = getWallet(currentUser.uid);
-        setBalance(wallet.balance);
-      }
-    };
-
-    window.addEventListener('walletUpdated', handleWalletUpdate);
-    return () => window.removeEventListener('walletUpdated', handleWalletUpdate);
-  }, [currentUser?.uid]);
 
   const handleLogout = async () => {
     try {
@@ -91,7 +71,11 @@ const Navbar = () => {
               border: '1px solid var(--color-border)',
               borderRadius: '999px',
               padding: '0.5rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              color: 'var(--color-text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
@@ -101,8 +85,9 @@ const Navbar = () => {
           {currentUser ? (
             <div className="flex gap-4 items-center">
               
-              {/* Wallet */}
-              <div
+              {/* Wallet Link */}
+              <Link
+                to="/wallet"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -110,15 +95,36 @@ const Navbar = () => {
                   background: 'var(--color-bg-start)',
                   padding: '0.4rem 0.8rem',
                   borderRadius: '1rem',
-                  border: '1px solid var(--color-border)'
+                  border: '1px solid var(--color-border)',
+                  textDecoration: 'none',
+                  color: 'inherit'
                 }}
-                title="SkillSwap Credits"
+                className="hover-bg-surface"
+                title="View Wallet History"
               >
                 <Wallet size={16} color="#10B981" />
-                <span style={{ fontWeight: 'bold' }}>{balance}</span>
-              </div>
+                <span style={{ fontWeight: 'bold' }}>{userData?.credits ?? 0}</span>
+              </Link>
 
               <NotificationDropdown />
+
+              <Link
+                to="/saved"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'transparent',
+                  padding: '0.5rem',
+                  borderRadius: '50%',
+                  border: '1px solid var(--color-border)',
+                  color: 'var(--color-text-primary)'
+                }}
+                className="hover-bg-surface"
+                title="Saved Mentors"
+              >
+                <Bookmark size={18} />
+              </Link>
 
               <Link to="/profile" className="btn btn-outline">Profile</Link>
               <button className="btn btn-primary" onClick={handleLogout}>

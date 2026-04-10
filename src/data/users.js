@@ -5,7 +5,10 @@ export const MOCK_USERS = [
     bio: 'CS sophomore from Pune building cool web apps. I survive on code, late-night hackathons, and endless cups of cutting chai.',
     skillsOffered: ['React', 'JavaScript', 'Node.js'], 
     skillsWanted: ['UI Design', 'Figma'], 
-    availability: 'Weekends' 
+    skillsWanted: ['UI Design', 'Figma'], 
+    availability: 'Weekends',
+    reviewCount: 12,
+    ratingTotal: 58
   },
   { 
     id: 2, 
@@ -13,7 +16,10 @@ export const MOCK_USERS = [
     bio: 'Food enthusiast and home baker. I can teach you traditional North Indian recipes.',
     skillsOffered: ['Cooking', 'Baking', 'Hindi'], 
     skillsWanted: ['Public Speaking', 'Video Editing'], 
-    availability: 'Evenings' 
+    skillsWanted: ['Public Speaking', 'Video Editing'], 
+    availability: 'Evenings',
+    reviewCount: 8,
+    ratingTotal: 34
   },
   { 
     id: 3, 
@@ -21,7 +27,10 @@ export const MOCK_USERS = [
     bio: 'Finance student trying to navigate the tech world.',
     skillsOffered: ['Accounting', 'Excel', 'Personal Finance'], 
     skillsWanted: ['Python', 'SQL'], 
-    availability: 'Weekdays' 
+    skillsWanted: ['Python', 'SQL'], 
+    availability: 'Weekdays',
+    reviewCount: 4,
+    ratingTotal: 18
   },
   { 
     id: 4, 
@@ -29,7 +38,10 @@ export const MOCK_USERS = [
     bio: 'Design student who loves creating beautiful interfaces.',
     skillsOffered: ['UI/UX Design', 'Figma', 'Sketch'], 
     skillsWanted: ['React Native', 'Swift'], 
-    availability: 'Flexible' 
+    skillsWanted: ['React Native', 'Swift'], 
+    availability: 'Flexible',
+    reviewCount: 22,
+    ratingTotal: 104
   },
   { 
     id: 5, 
@@ -37,7 +49,10 @@ export const MOCK_USERS = [
     bio: 'Fitness freak and certified yoga trainer.',
     skillsOffered: ['Yoga', 'Fitness Training', 'Nutrition'], 
     skillsWanted: ['Digital Marketing', 'SEO'], 
-    availability: 'Mornings' 
+    skillsWanted: ['Digital Marketing', 'SEO'], 
+    availability: 'Mornings',
+    reviewCount: 5,
+    ratingTotal: 24
   },
   { 
     id: 6, 
@@ -45,7 +60,10 @@ export const MOCK_USERS = [
     bio: 'Machine learning nerd. Let\'s talk about AI over chai.',
     skillsOffered: ['Python', 'Machine Learning', 'Data Analysis'], 
     skillsWanted: ['Guitar', 'Music Theory'], 
-    availability: 'Evenings' 
+    skillsWanted: ['Guitar', 'Music Theory'], 
+    availability: 'Evenings',
+    reviewCount: 17,
+    ratingTotal: 82
   },
   { 
     id: 7, 
@@ -53,6 +71,9 @@ export const MOCK_USERS = [
     bio: 'Freelance photographer looking to write better copy for client work.',
     skillsOffered: ['Photography', 'Lightroom', 'Photoshop'], 
     skillsWanted: ['Copywriting', 'Marketing'], 
-    availability: 'Weekends' 
+    skillsWanted: ['Copywriting', 'Marketing'], 
+    availability: 'Weekends',
+    reviewCount: 2,
+    ratingTotal: 10
   }
 ];

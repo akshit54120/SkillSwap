@@ -23,6 +23,18 @@ const Profile = () => {
     }
   }, [contextUserData]);
 
+  const calculateProgress = () => {
+    let score = 0;
+    if (profileData.name && profileData.name.trim() !== '') score += 20;
+    if (profileData.bio && profileData.bio.trim() !== '') score += 20;
+    if (profileData.availability && profileData.availability.trim() !== '') score += 20;
+    if (profileData.skillsOffered && profileData.skillsOffered.length > 0) score += 20;
+    if (profileData.skillsWanted && profileData.skillsWanted.length > 0) score += 20;
+    return score;
+  };
+  
+  const completionPercentage = calculateProgress();
+
   const [newSkillOffered, setNewSkillOffered] = useState('');
   const [newSkillWanted, setNewSkillWanted] = useState('');
 
@@ -99,6 +111,26 @@ const Profile = () => {
           >
             <Save size={18} /> {loading ? 'Saving...' : 'Save Changes'}
           </button>
+        )}
+      </div>
+
+      {/* Progress Bar Addition */}
+      <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem', backgroundColor: 'var(--color-bg-start)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+          <span style={{ fontWeight: 600 }}>Profile Completion</span>
+          <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{completionPercentage}%</span>
+        </div>
+        <div style={{ width: '100%', backgroundColor: 'var(--color-border)', borderRadius: '1rem', height: '10px', overflow: 'hidden' }}>
+          <div style={{ width: `${completionPercentage}%`, backgroundColor: completionPercentage === 100 ? '#10B981' : 'var(--color-primary)', height: '100%', transition: 'width 0.5s ease-in-out', borderRadius: '1rem' }} />
+        </div>
+        {completionPercentage < 100 ? (
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: '0.75rem', marginBottom: 0 }}>
+            Complete your profile to get better matches and attract more skill-swaps!
+          </p>
+        ) : (
+          <p style={{ fontSize: '0.85rem', color: '#10B981', marginTop: '0.75rem', marginBottom: 0, fontWeight: 500 }}>
+            Your profile is fully complete! You are ready to swap at optimal capacity.
+          </p>
         )}
       </div>
 
