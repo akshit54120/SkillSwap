@@ -14,6 +14,7 @@ import Onboarding from './pages/Onboarding';
 import ChatPage from './pages/ChatPage';
 import Wallet from './pages/Wallet';
 import SavedUsers from './pages/SavedUsers';
+import Dashboard from './pages/Dashboard';
 
 const AppLayout = () => {
   const location = useLocation();
@@ -35,6 +36,7 @@ const AppLayout = () => {
           <Route path="/chat/:conversationId" element={<ChatPage />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/saved" element={<SavedUsers />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
       {!isChatRoute && <Footer />}

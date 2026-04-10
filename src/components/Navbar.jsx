@@ -62,6 +62,7 @@ const Navbar = () => {
         <nav className="flex items-center gap-6">
           <Link to="/">Home</Link>
           <Link to="/explore">Explore</Link>
+          <Link to="/dashboard">Dashboard</Link>
 
           {/* Theme Toggle */}
           <button
