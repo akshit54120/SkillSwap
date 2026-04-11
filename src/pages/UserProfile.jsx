@@ -107,6 +107,8 @@ const UserProfile = () => {
           senderName: userData?.name || currentUser.displayName || 'Unknown',
           receiverId: String(user.id),
           receiverName: user.name,
+          receiverEmail: user.email || '',
+          senderEmail: currentUser.email || '',
           skillWanted: user.skillsOffered?.[0] || 'Any',
           skillOffered: userData?.skillsOffered?.[0] || 'Any',
           status: 'pending',

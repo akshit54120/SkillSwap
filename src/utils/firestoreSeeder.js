@@ -36,9 +36,10 @@ export const seedFirestore = async () => {
     
     if (tutorsSnapshot.empty) {
       console.log("Seeding mock tutors...");
-      const promises = MOCK_TUTORS.map((user, index) => 
-        setDoc(doc(db, 'users', `tutor_${index}`), { ...user, isMockTutor: true })
-      );
+      const promises = MOCK_TUTORS.map((user, index) => {
+        const id = `tutor_${index}`;
+        return setDoc(doc(db, 'users', id), { ...user, uid: id, id: id, isMockTutor: true });
+      });
       await Promise.all(promises);
     }
     

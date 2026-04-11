@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { X, Calendar, Clock, Video, FileText } from 'lucide-react';
 import { db } from '../firebase';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
+import { sendMessage } from '../services/ChatService';
+import { sendMockEmail } from '../services/EmailService';
 
 const ScheduleModal = ({ isOpen, onClose, request, senderName }) => {
   const [formData, setFormData] = useState({
@@ -34,8 +36,23 @@ const ScheduleModal = ({ isOpen, onClose, request, senderName }) => {
           status: 'scheduled'
         }
       });
+      
+      // Sync to Chat
+      const conversationId = [String(request.senderId), String(request.receiverId)].sort().join('_');
+      await sendMessage(conversationId, {
+        senderId: request.receiverId,
+        type: 'text',
+        content: `📅 MEETING SCHEDULED: ${formData.date} at ${formData.time} (${formData.duration} mins). Link: ${formData.meetingLink || 'To be shared'}. Notes: ${formData.description || 'N/A'}`
+      });
 
-      alert('Class scheduled successfully!');
+      // Send Mock Email
+      await sendMockEmail({
+        to: request.senderEmail || 'student@skillswap.com',
+        subject: `Confirmed: ${request.skillWanted} session with your Mentor`,
+        body: `Your mentor has scheduled a session for ${formData.date} at ${formData.time}. Join here: ${formData.meetingLink || 'Will be shared in chat'}`
+      });
+
+      alert('Class scheduled successfully! Your student has been notified via chat and email.');
       onClose();
     } catch (err) {
       console.error("Error scheduling class:", err);
@@ -46,7 +63,7 @@ const ScheduleModal = ({ isOpen, onClose, request, senderName }) => {
   };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyCenter: 'center', zIndex: 1000, padding: '1rem' }}>
+    <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
       <div className="card animate-fade-in" style={{ maxWidth: '500px', width: '100%', padding: '2rem', position: 'relative' }}>
         <button onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-secondary)' }}>
           <X size={24} />

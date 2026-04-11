@@ -147,6 +147,10 @@ const Requests = () => {
           description: `Connection with ${currentUser?.displayName || 'Teacher'} accepted`,
           createdAt: serverTimestamp()
         });
+
+        // Automatically open the schedule modal after acceptance
+        setSelectedRequest(req);
+        setIsModalOpen(true);
       } else {
         await updateDoc(requestRef, { status: 'rejected' });
       }

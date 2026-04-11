@@ -52,7 +52,8 @@ const Explore = () => {
 
           users.push({
             ...data,
-            id: data.uid,
+            id: data.uid || data.id || doc.id,
+            uid: data.uid || data.id || doc.id,
             isRealUser: true
           });
         });
@@ -166,6 +167,8 @@ const Explore = () => {
           senderName: userData?.name || currentUser.displayName || 'Unknown',
           receiverId: String(user.id),
           receiverName: user.name,
+          receiverEmail: user.email || '',
+          senderEmail: currentUser.email || '',
           skillWanted: user.skillsOffered?.[0] || 'Any',
           skillOffered: userData?.skillsOffered?.[0] || 'Any',
           status: 'pending',
